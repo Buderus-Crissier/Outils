@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buderus - Sélection PAC Air/Eau intérieures au R290 - Suisse</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Roboto for Buderus feel) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .buderus-blue {
+            background-color: #003d7c;
+        }
+        .buderus-blue-light {
+            background-color: #005eb8;
+        }
+        .buderus-text {
+            color: #003d7c;
+        }
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-active {
+            border-left: 5px solid #005eb8;
+        }
+        .btn-primary {
+            background-color: #005eb8;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #003d7c;
+        }
+        /* Custom range slider styling could go here */
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="buderus-blue text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Buderus Logo Placeholder text if logo not available -->
+                <h1 class="text-2xl font-bold tracking-tight">Buderus</h1>
+                <span class="border-l border-white/30 h-6 mx-2"></span>
+                <span class="text-sm font-light opacity-90" data-i18n="appTitle">Sélection PAC Air/Eau intérieures au R290 - Suisse</span>
+            </div>
+            
+            <!-- Language Selector -->
+            <div class="flex space-x-2">
+                <button onclick="setLanguage('fr')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-fr">FR</button>
+                <button onclick="setLanguage('de')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-de">DE</button>
+                <button onclick="setLanguage('it')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-it">IT</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Step 1: Power Estimation -->
+        <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden step-card step-active">
+            <div class="buderus-blue-light px-6 py-4 text-white flex justify-between items-center cursor-pointer" onclick="toggleSection('estimation-content')">
+                <h2 class="text-lg font-semibold flex items-center">
+                    <span class="bg-white text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 font-bold">1</span>
+                    <span data-i18n="step1Title">Estimation de la puissance requise</span>
+                </h2>
+                <i class="fas fa-chevron-down transform transition-transform" id="icon-estimation-content"></i>
+            </div>
+            
+            <div id="estimation-content" class="p-6">
+                
+                <!-- Warnings & Notes -->
+                <div class="space-y-4 mb-6">
+                    <!-- SIA Warning (Moved here) -->
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 shadow-sm rounded-r-md">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700 font-bold" data-i18n="siaWarningTitle">
+                                    AVERTISSEMENT IMPORTANT
+                                </p>
+                                <p class="text-sm text-yellow-700 mt-1" data-i18n="siaWarningText">
+                                    Les résultats fournis par cet outil sont purement indicatifs (estimation à A-7/W35). Ils ne remplacent en aucun cas un calcul de charge thermique précis selon les normes SIA (SIA 384/201) effectué par un professionnel qualifié.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Solar Note -->
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 shadow-sm rounded-r-md">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-sun text-blue-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-800" data-i18n="solarWarning">
+                                    Note : Si l'installation dispose de solaire thermique, la puissance de la PAC calculée ici est probablement sous-évaluée.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-gray-600 mb-6 text-sm" data-i18n="step1Desc">
+                    Si vous ne connaissez pas la puissance nécessaire, utilisez l'une des méthodes ci-dessous pour l'estimer.
+                </p>
+
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button class="flex-1 py-2 px-4 text-center text-sm font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none transition-colors" id="tab-consumption" onclick="switchTab('consumption')">
+                        <i class="fas fa-fire-alt mr-2"></i><span data-i18n="tabConsumption">Par Consommation</span>
+                    </button>
+                    <button class="flex-1 py-2 px-4 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 focus:outline-none transition-colors" id="tab-surface" onclick="switchTab('surface')">
+                        <i class="fas fa-home mr-2"></i><span data-i18n="tabSurface">Par Surface</span>
+                    </button>
+                </div>
+
+                <!-- Method 1: Consumption -->
+                <div id="method-consumption" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="fuelType">Type de combustible</label>
+                            <select id="fuel-type" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2 bg-gray-50">
+                                <option value="oil" data-i18n="oil">Mazout (Litres)</option>
+                                <option value="gas" data-i18n="gas">Gaz (m³)</option>
+                                <option value="electric" data-i18n="electric">Électricité (kWh)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="avgConsumption">Consommation moyenne annuelle</label>
+                            <input type="number" id="annual-consumption" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2" placeholder="ex: 2000">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="usageType">Usage de la chaudière actuelle</label>
+                            <div class="flex space-x-6">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio text-blue-600" name="usage-type" value="heating" checked onchange="calculateConsumption()">
+                                    <span class="ml-2" data-i18n="heatingOnly">Chauffage seul</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio text-blue-600" name="usage-type" value="mixed" onchange="calculateConsumption()">
+                                    <span class="ml-2" data-i18n="heatingDhw">Chauffage + ECS</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="sheddingLabel">Durée de délestage (h)</label>
+                            <input type="number" id="shedding-consumption" min="0" max="10" step="0.5" value="0" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2" placeholder="ex: 2">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button onclick="calculateConsumption()" class="btn-primary w-full md:w-auto px-6 py-2 rounded shadow-sm font-medium text-sm">
+                            <i class="fas fa-calculator mr-2"></i><span data-i18n="btnCalculate">Calculer l'estimation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Method 2: Surface -->
+                <div id="method-surface" class="hidden space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="surfaceArea">Surface de référence énergétique (SRE)</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <input type="number" id="surface-area" class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 border p-2 pr-12" placeholder="ex: 150">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">m²</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="insulationLevel">Qualité de l'isolation</label>
+                            <select id="insulation-level" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2 bg-gray-50">
+                                <option value="poor" data-i18n="insulPoor">Ancien mal isolé (70W/m²)</option>
+                                <option value="old_good" data-i18n="insulOldGood">Ancien bien isolé (50W/m²)</option>
+                                <option value="new_std" data-i18n="insulNewStd">Nouvelle construction (40W/m²)</option>
+                                <option value="minergie" data-i18n="insulMinergie">Minergie (30W/m²)</option>
+                                <option value="minergie_p" data-i18n="insulMinergieP">Minergie-P (20W/m²)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Surface Advanced Params -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="usageType">Usage prévu de la PAC</label>
+                            <div class="flex space-x-6">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio text-blue-600" name="surface-usage" value="heating" checked onchange="toggleInhabitants()">
+                                    <span class="ml-2" data-i18n="heatingOnly">Chauffage seul</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio text-blue-600" name="surface-usage" value="mixed" onchange="toggleInhabitants()">
+                                    <span class="ml-2" data-i18n="heatingDhw">Chauffage + ECS</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="sheddingLabel">Durée de délestage (h)</label>
+                            <input type="number" id="shedding-surface" min="0" max="10" step="0.5" value="0" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2" placeholder="ex: 2">
+                        </div>
+                    </div>
+
+                    <!-- Inhabitants Input (Hidden by default) -->
+                    <div id="inhabitants-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="inhabitantsLabel">Nombre d'habitants (max théorique)</label>
+                        <input type="number" id="inhabitants" min="1" value="4" class="w-full md:w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2">
+                        <p class="text-xs text-gray-500 mt-1" data-i18n="inhabitantsHint">+200W par habitant ajouté au calcul.</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <button onclick="calculateSurface()" class="btn-primary w-full md:w-auto px-6 py-2 rounded shadow-sm font-medium text-sm">
+                            <i class="fas fa-calculator mr-2"></i><span data-i18n="btnCalculate">Calculer l'estimation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estimation Result -->
+                <div id="estimation-result" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 hidden">
+                    <div class="flex justify-between items-center flex-wrap gap-4">
+                        <div>
+                            <span class="text-sm text-blue-800 block" data-i18n="estResultLabel">Puissance estimée (A-7/W35) :</span>
+                            <span class="text-3xl font-bold text-blue-900" id="result-value">0.0</span> <span class="text-xl font-bold text-blue-900">kW</span>
+                        </div>
+                        <button onclick="applyEstimation()" class="bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 px-4 py-2 rounded text-sm font-medium transition shadow-sm">
+                            <span data-i18n="useThisValue">Utiliser cette valeur</span> <i class="fas fa-arrow-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Selection -->
+        <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden step-card">
+            <div class="buderus-blue-light px-6 py-4 text-white flex justify-between items-center">
+                <h2 class="text-lg font-semibold flex items-center">
+                    <span class="bg-white text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 font-bold">2</span>
+                    <span data-i18n="step2Title">Sélection de la PAC</span>
+                </h2>
+            </div>
+            
+            <div class="p-6 bg-gray-50 border-b border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Target Power Input -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <span data-i18n="targetPowerLabel">Puissance souhaitée à A-7/W35</span>
+                            <i class="fas fa-info-circle text-gray-400 ml-1 cursor-help" title="Point de bivalence estimé"></i>
+                        </label>
+                        <div class="relative rounded-md shadow-sm">
+                            <input type="number" id="target-power" step="0.1" class="block w-full text-lg border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 p-3 border" placeholder="ex: 8.5" oninput="findProducts()">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 font-bold">kW</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1" data-i18n="manualEntryHint">Vous pouvez modifier cette valeur manuellement.</p>
+                    </div>
+
+                    <!-- Project Timeline Input -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2" data-i18n="projectDateLabel">Date prévue du projet</label>
+                        <select id="project-date" class="block w-full text-lg border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 p-3 border bg-white" onchange="findProducts()">
+                            <!-- Generated by JS -->
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1" data-i18n="availabilityHint">Seules les PACs disponibles à cette date seront affichées.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results List -->
+            <div class="p-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    <span data-i18n="resultsTitle">Modèles recommandés</span>
+                </h3>
+                
+                <div id="results-container" class="space-y-4">
+                    <!-- Results injected here -->
+                    <div class="text-center text-gray-400 py-8 italic" data-i18n="noResultsStart">
+                        Entrez une puissance pour voir les résultats.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; 2026 Buderus. <span data-i18n="footerDisclaimer">Outil d'aide à la vente interne. Ne remplace pas une étude technique officielle.</span></p>
+            <p class="text-xs mt-2 text-gray-600">v1.0 - 16.01.2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA & CONFIGURATION ---
+
+        // Translations
+        const i18n = {
+            fr: {
+                appTitle: "Sélection PAC Air/Eau intérieures au R290 - Suisse",
+                siaWarningTitle: "AVERTISSEMENT IMPORTANT",
+                siaWarningText: "Les résultats sont indicatifs (A-7/W35). Ils ne remplacent pas un calcul SIA 384/201 par un professionnel.",
+                solarWarning: "Note : Si l'installation dispose de solaire thermique, la puissance de la PAC calculée ici est probablement sous-évaluée.",
+                step1Title: "Estimation de la puissance",
+                step1Desc: "Utilisez une méthode ci-dessous pour estimer le besoin.",
+                tabConsumption: "Par Consommation",
+                tabSurface: "Par Surface",
+                fuelType: "Type de combustible",
+                oil: "Mazout (Litres)",
+                gas: "Gaz (m³)",
+                electric: "Électricité (kWh)",
+                avgConsumption: "Consommation annuelle moy.",
+                usageType: "Usage / Type",
+                heatingOnly: "Chauffage seul",
+                heatingDhw: "Chauffage + ECS",
+                sheddingLabel: "Durée de délestage (h/jour)",
+                inhabitantsLabel: "Nombre d'habitants (max théorique)",
+                inhabitantsHint: "+200W par habitant ajouté au calcul.",
+                btnCalculate: "Calculer",
+                surfaceArea: "Surface (SRE) en m²",
+                insulationLevel: "Isolation",
+                insulPoor: "Ancien mal isolé (70W/m²)",
+                insulOldGood: "Ancien bien isolé (50W/m²)",
+                insulNewStd: "Nouvelle construction (40W/m²)",
+                insulMinergie: "Minergie (30W/m²)",
+                insulMinergieP: "Minergie-P (20W/m²)",
+                estResultLabel: "Puissance estimée (A-7/W35) :",
+                useThisValue: "Utiliser cette valeur",
+                step2Title: "Sélection de la PAC",
+                targetPowerLabel: "Puissance requise (A-7/W35)",
+                manualEntryHint: "Entrez ou modifiez la valeur manuellement.",
+                projectDateLabel: "Date du projet",
+                availabilityHint: "Filtre les produits selon leur disponibilité.",
+                resultsTitle: "Modèles compatibles",
+                noResultsStart: "Entrez une puissance pour voir les modèles.",
+                noResultsFound: "Aucun modèle ne correspond à vos critères.",
+                availNow: "Disponible",
+                availFrom: "Dispo dès",
+                power: "Puissance",
+                infoLowerPower: "Information: Puissance légèrement inférieure (-1kW max)",
+                selectQuarter: "Trimestre"
+            },
+            de: {
+                appTitle: "Auswahl WP Luft/Wasser Innen R290 - Schweiz",
+                siaWarningTitle: "WICHTIGER HINWEIS",
+                siaWarningText: "Die Ergebnisse sind Richtwerte (A-7/W35). Sie ersetzen keine SIA 384/201 Berechnung durch einen Fachmann.",
+                solarWarning: "Hinweis: Bei vorhandener Solarthermie ist die berechnete Leistung hier wahrscheinlich zu niedrig.",
+                step1Title: "Leistungsschätzung",
+                step1Desc: "Nutzen Sie eine Methode zur Schätzung.",
+                tabConsumption: "Nach Verbrauch",
+                tabSurface: "Nach Fläche",
+                fuelType: "Brennstoffart",
+                oil: "Heizöl (Liter)",
+                gas: "Gas (m³)",
+                electric: "Strom (kWh)",
+                avgConsumption: "Jahresverbrauch Ø",
+                usageType: "Nutzung",
+                heatingOnly: "Nur Heizung",
+                heatingDhw: "Heizung + WW",
+                sheddingLabel: "Sperrzeiten (h/Tag)",
+                inhabitantsLabel: "Anzahl Bewohner (theor. Max)",
+                inhabitantsHint: "+200W pro Bewohner.",
+                btnCalculate: "Berechnen",
+                surfaceArea: "Energiebezugsfläche (EBF) m²",
+                insulationLevel: "Dämmung",
+                insulPoor: "Schlecht isoliert (70W/m²)",
+                insulOldGood: "Altbau gut isoliert (50W/m²)",
+                insulNewStd: "Neubau (40W/m²)",
+                insulMinergie: "Minergie (30W/m²)",
+                insulMinergieP: "Minergie-P (20W/m²)",
+                estResultLabel: "Geschätzte Leistung (A-7/W35):",
+                useThisValue: "Wert übernehmen",
+                step2Title: "Wärmepumpen Auswahl",
+                targetPowerLabel: "Benötigte Leistung (A-7/W35)",
+                manualEntryHint: "Wert manuell eingeben oder ändern.",
+                projectDateLabel: "Projekttermin",
+                availabilityHint: "Filtert Produkte nach Verfügbarkeit.",
+                resultsTitle: "Empfohlene Modelle",
+                noResultsStart: "Geben Sie eine Leistung ein.",
+                noResultsFound: "Keine passenden Modelle gefunden.",
+                availNow: "Verfügbar",
+                availFrom: "Verfügbar ab",
+                power: "Leistung",
+                infoLowerPower: "Info: Leistung leicht geringer (-1kW max)",
+                selectQuarter: "Quartal"
+            },
+            it: {
+                appTitle: "Selezione PAC Aria/Acqua interne R290 - Svizzera",
+                siaWarningTitle: "AVVISO IMPORTANTE",
+                siaWarningText: "I risultati sono indicativi (A-7/W35). Non sostituiscono un calcolo SIA 384/201 effettuato da un professionista.",
+                solarWarning: "Nota: In presenza di solare termico, la potenza calcolata è probabilmente sottostimata.",
+                step1Title: "Stima della potenza",
+                step1Desc: "Usa un metodo qui sotto per stimare il fabbisogno.",
+                tabConsumption: "Per Consumo",
+                tabSurface: "Per Superficie",
+                fuelType: "Tipo di combustibile",
+                oil: "Gasolio (Litri)",
+                gas: "Gas (m³)",
+                electric: "Elettricità (kWh)",
+                avgConsumption: "Consumo medio annuo",
+                usageType: "Uso",
+                heatingOnly: "Solo riscaldamento",
+                heatingDhw: "Risc. + ACS",
+                sheddingLabel: "Durata interruzione (h/giorno)",
+                inhabitantsLabel: "Numero abitanti (max teorico)",
+                inhabitantsHint: "+200W per abitante.",
+                btnCalculate: "Calcolare",
+                surfaceArea: "Superficie (SRE) m²",
+                insulationLevel: "Isolamento",
+                insulPoor: "Scarso isolamento (70W/m²)",
+                insulOldGood: "Vecchio ben isolato (50W/m²)",
+                insulNewStd: "Nuova costruzione (40W/m²)",
+                insulMinergie: "Minergie (30W/m²)",
+                insulMinergieP: "Minergie-P (20W/m²)",
+                estResultLabel: "Potenza stimata (A-7/W35):",
+                useThisValue: "Usa questo valore",
+                step2Title: "Selezione della PAC",
+                targetPowerLabel: "Potenza richiesta (A-7/W35)",
+                manualEntryHint: "Inserisci o modifica manualmente.",
+                projectDateLabel: "Data del progetto",
+                availabilityHint: "Filtra i prodotti in base alla disponibilità.",
+                resultsTitle: "Modelli raccomandati",
+                noResultsStart: "Inserisci una potenza per vedere i risultati.",
+                noResultsFound: "Nessun modello trovato per questa data/potenza.",
+                availNow: "Disponibile",
+                availFrom: "Disponibile da",
+                power: "Potenza",
+                infoLowerPower: "Info: Potenza leggermente inferiore (-1kW max)",
+                selectQuarter: "Trimestre"
+            }
+        };
+
+        // PRODUCT DATA
+        const products = [
+            { power: 6, name: "WLW176/186i-6 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 6, name: "WLW176i.2-6 AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 6, name: "WLW186i.2-6 AR", avail: "2027-Q1", end: "2027-Q4" },
+            
+            { power: 8, name: "WLW176/186i-8 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 8, name: "WLW176i.2-8 AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 8, name: "WLW186i.2-8 AR", avail: "2027-Q1", end: "2027-Q4" },
+            
+            { power: 10, name: "WLW176/186i-10 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 10, name: "WLW186i.2-10 MBE+ AR", avail: "2026-Q2", end: "2027-Q4" },
+            
+            { power: 11, name: "WLW176i.2-11 AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 11, name: "WLW186i.2-11 AR", avail: "2027-Q1", end: "2027-Q4" },
+            
+            { power: 12, name: "WLW176/186i-12 AR", avail: "2026-Q1", end: "2027-Q2" },
+            
+            { power: 13, name: "WLW186i.2-13 MBE+ AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 13, name: "PRO M", avail: "2026-Q1", end: "2027-Q4" },
+            
+            { power: 14, name: "WLW176i.2-14 AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 14, name: "WLW186i.2-14 AR", avail: "2027-Q1", end: "2027-Q4" },
+            
+            { power: 15, name: "WLW186i.2-15 MBE+ AR", avail: "2026-Q2", end: "2027-Q4" },
+            { power: 15, name: "PRO AC 10 AW (R32)", avail: "2026-Q1", end: "2026-Q4" },
+            
+            { power: 19, name: "PRO AC 16 AW (R32)", avail: "2026-Q1", end: "2026-Q4" },
+            
+            { power: 20, name: "PRO L", avail: "2026-Q1", end: "2027-Q4" },
+            { power: 20, name: "LA2030CP", avail: "2026-Q1", end: "2027-Q4" },
+            
+            { power: 30, name: "PRO XL", avail: "2026-Q3", end: "2027-Q4" },
+            { power: 30, name: "LA3050CP", avail: "2026-Q4", end: "2027-Q4" },
+            
+            { power: 42, name: "LA4060CP", avail: "2026-Q1", end: "2027-Q4" }
+        ];
+
+        let currentLang = 'fr';
+
+        // --- INIT ---
+        window.onload = function() {
+            populateDateSelector();
+            setLanguage('fr');
+            switchTab('consumption');
+        };
+
+        // --- LOGIC ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    el.textContent = i18n[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('bg-white/20'));
+            document.getElementById(`btn-${lang}`).classList.add('bg-white/20');
+            populateDateSelector();
+            findProducts();
+        }
+
+        function toggleSection(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            el.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        function switchTab(tab) {
+            const consumptionDiv = document.getElementById('method-consumption');
+            const surfaceDiv = document.getElementById('method-surface');
+            const tabCons = document.getElementById('tab-consumption');
+            const tabSurf = document.getElementById('tab-surface');
+
+            if (tab === 'consumption') {
+                consumptionDiv.classList.remove('hidden');
+                surfaceDiv.classList.add('hidden');
+                tabCons.classList.add('text-blue-600', 'border-blue-600');
+                tabCons.classList.remove('text-gray-500', 'border-transparent');
+                tabSurf.classList.add('text-gray-500', 'border-transparent');
+                tabSurf.classList.remove('text-blue-600', 'border-blue-600');
+            } else {
+                consumptionDiv.classList.add('hidden');
+                surfaceDiv.classList.remove('hidden');
+                tabSurf.classList.add('text-blue-600', 'border-blue-600');
+                tabSurf.classList.remove('text-gray-500', 'border-transparent');
+                tabCons.classList.add('text-gray-500', 'border-transparent');
+                tabCons.classList.remove('text-blue-600', 'border-blue-600');
+            }
+        }
+
+        function toggleInhabitants() {
+            const usage = document.querySelector('input[name="surface-usage"]:checked').value;
+            const div = document.getElementById('inhabitants-container');
+            if (usage === 'mixed') {
+                div.classList.remove('hidden');
+            } else {
+                div.classList.add('hidden');
+            }
+        }
+
+        function calculateConsumption() {
+            const fuelType = document.getElementById('fuel-type').value;
+            const amount = parseFloat(document.getElementById('annual-consumption').value);
+            const usage = document.querySelector('input[name="usage-type"]:checked').value;
+            const shedding = parseFloat(document.getElementById('shedding-consumption').value) || 0;
+
+            if (!amount || isNaN(amount)) { alert("Veuillez entrer une consommation valide."); return; }
+            
+            // Energy calc
+            // Oil Hi=10, Gas Hi=~10. We use 10 as baseline estimate factor.
+            // Electric = 1
+            let energyKwh = 0;
+            if (fuelType === 'electric') {
+                energyKwh = amount;
+            } else {
+                energyKwh = amount * 10;
+            }
+
+            const hours = (usage === 'heating') ? 2000 : 2300;
+            let power = energyKwh / hours;
+
+            // Apply shedding factor: P_final = P * 24 / (24 - shedding)
+            if (shedding > 0 && shedding < 24) {
+                power = power * (24 / (24 - shedding));
+            }
+            
+            showResult(power);
+        }
+
+        function calculateSurface() {
+            const area = parseFloat(document.getElementById('surface-area').value);
+            const insulation = document.getElementById('insulation-level').value;
+            const usage = document.querySelector('input[name="surface-usage"]:checked').value;
+            const shedding = parseFloat(document.getElementById('shedding-surface').value) || 0;
+
+            if (!area || isNaN(area)) { alert("Veuillez entrer une surface valide."); return; }
+            
+            let factor = 70;
+            switch (insulation) {
+                case 'poor': factor = 70; break;
+                case 'old_good': factor = 50; break;
+                case 'new_std': factor = 40; break;
+                case 'minergie': factor = 30; break;
+                case 'minergie_p': factor = 20; break;
+            }
+
+            let powerW = area * factor;
+
+            // Add DHW (ECS) load if mixed
+            if (usage === 'mixed') {
+                const inhabitants = parseFloat(document.getElementById('inhabitants').value) || 0;
+                powerW += (inhabitants * 200);
+            }
+
+            let powerKw = powerW / 1000;
+
+            // Apply shedding factor
+            if (shedding > 0 && shedding < 24) {
+                powerKw = powerKw * (24 / (24 - shedding));
+            }
+
+            showResult(powerKw);
+        }
+
+        function showResult(val) {
+            // "Max 1 chiffre après la virgule"
+            const rounded = Math.round(val * 10) / 10;
+            document.getElementById('result-value').textContent = rounded.toFixed(1);
+            document.getElementById('estimation-result').classList.remove('hidden');
+        }
+
+        function applyEstimation() {
+            const val = document.getElementById('result-value').textContent;
+            document.getElementById('target-power').value = val;
+            findProducts();
+            document.getElementById('target-power').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function populateDateSelector() {
+            const select = document.getElementById('project-date');
+            const currentVal = select.value;
+            select.innerHTML = '';
+
+            const today = new Date();
+            let currentYear = today.getFullYear();
+            let currentQuarter = Math.floor((today.getMonth() + 3) / 3);
+
+            // Add "Now" option effectively Q1/Current
+            const nowQStr = `${currentYear}-Q${currentQuarter}`;
+            const optNow = document.createElement('option');
+            optNow.value = nowQStr; 
+            optNow.text = i18n[currentLang].availNow + ` (${currentYear} Q${currentQuarter})`;
+            select.add(optNow);
+
+            // Generate future quarters until 2027 Q4
+            while (true) {
+                currentQuarter++;
+                if (currentQuarter > 4) {
+                    currentQuarter = 1;
+                    currentYear++;
+                }
+
+                // Stop loop if we go beyond 2027
+                if (currentYear > 2027) break;
+
+                const opt = document.createElement('option');
+                const qString = `${currentYear}-Q${currentQuarter}`;
+                opt.value = qString;
+                opt.text = `${currentYear} Q${currentQuarter}`;
+                select.add(opt);
+            }
+            
+            if(currentVal) {
+               let exists = false;
+               for(let i=0; i<select.options.length; i++){
+                   if(select.options[i].value === currentVal) exists = true;
+               }
+               if(exists) select.value = currentVal;
+            }
+        }
+
+        function getQuarterValue(qStr) {
+            if (!qStr) return 0;
+            const parts = qStr.split("-Q");
+            if (parts.length !== 2) return 0;
+            return parseInt(parts[0]) * 10 + parseInt(parts[1]);
+        }
+
+        function getProductDescription(name) {
+            // "BUDERUS haut de gamme futur" for WLW186i.2-xxx MBE+ AR
+            if (/WLW186i\.2.*MBE\+.*AR/.test(name)) return "BUDERUS haut de gamme futur";
+            
+            // "BUDERUS cœur de gamme" for WLW176/186i-xxx AR
+            if (/WLW176\/186i.*AR/.test(name)) return "BUDERUS cœur de gamme";
+            
+            // "BUDERUS entrée de gamme futur" for WLW176i.2-xxx AR
+            if (/WLW176i\.2.*AR/.test(name)) return "BUDERUS entrée de gamme futur";
+            
+            // "BUDERUS cœur de gamme futur" for WLW186i.2-xxx AR
+            if (/WLW186i\.2.*AR/.test(name)) return "BUDERUS cœur de gamme futur";
+            
+            // "Marque KERMI..." for PRO x
+            if (/^PRO/.test(name)) return "Marque KERMI (groupe KERMI/ARBONIA)";
+            
+            // "Marque DIMPLEX" for LAxxxCP
+            if (/^LA.*CP/.test(name)) return "Marque DIMPLEX";
+
+            return "";
+        }
+
+        function findProducts() {
+            const targetStr = document.getElementById('target-power').value;
+            if (!targetStr) return;
+
+            const target = parseFloat(targetStr);
+            const selectedDateStr = document.getElementById('project-date').value;
+            const selectedDateVal = getQuarterValue(selectedDateStr);
+            const container = document.getElementById('results-container');
+            
+            container.innerHTML = '';
+
+            // 1. Initial Filter
+            const availableProducts = products.filter(p => {
+                const pStartVal = getQuarterValue(p.avail);
+                const pEndVal = getQuarterValue(p.end);
+                
+                if (selectedDateVal < pStartVal) return false;
+                if (selectedDateVal > pEndVal) return false;
+
+                return p.power >= (target - 1.0);
+            });
+
+            // 2. Next Higher Power Logic
+            const strictlyHigherOrEqual = availableProducts.filter(p => p.power >= target);
+            strictlyHigherOrEqual.sort((a, b) => a.power - b.power);
+
+            let nextHigherPowerValue = null;
+            if (strictlyHigherOrEqual.length > 0) {
+                nextHigherPowerValue = strictlyHigherOrEqual[0].power;
+            }
+
+            // 3. Final Filter
+            const finalMatches = availableProducts.filter(p => {
+                if (p.power < target) return true;
+                if (nextHigherPowerValue !== null && p.power === nextHigherPowerValue) return true;
+                return false;
+            });
+
+            if (finalMatches.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-500 py-4">${i18n[currentLang].noResultsFound}</div>`;
+                return;
+            }
+
+            finalMatches.sort((a, b) => a.power - b.power);
+
+            finalMatches.forEach(p => {
+                const isStrictMatch = p.power >= target;
+                const isCloseMatch = !isStrictMatch && p.power >= (target - 1.0);
+                const desc = getProductDescription(p.name);
+
+                let cardClass = isStrictMatch ? "border-l-4 border-green-500" : "border-l-4 border-orange-400 opacity-90";
+                
+                let badge = isStrictMatch ? 
+                    `<span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">OK</span>` : 
+                    `<span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded"><i class="fas fa-info-circle mr-1"></i> -${(target - p.power).toFixed(1)} kW</span>`;
+
+                let dateInfo = `<i class="far fa-calendar-alt text-gray-400 mr-1"></i> ${p.avail} <i class="fas fa-arrow-right text-xs mx-1"></i> ${p.end}`;
+
+                const card = document.createElement('div');
+                card.className = `bg-white p-4 rounded shadow-sm border ${cardClass} flex justify-between items-center transition hover:shadow-md`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 mb-1">
+                            <h4 class="font-bold text-lg text-gray-800">${p.name}</h4>
+                            ${desc ? `<span class="text-xs font-medium px-2 py-1 rounded bg-gray-100 text-gray-600 border border-gray-200">${desc}</span>` : ''}
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <span class="font-medium">${i18n[currentLang].power} A-7/W35:</span> 
+                            <span class="text-lg font-bold ${isStrictMatch ? 'text-blue-700' : 'text-orange-600'}">${p.power.toFixed(1)} kW</span>
+                        </div>
+                        ${isCloseMatch ? `<div class="text-xs text-orange-600 mt-1 italic">${i18n[currentLang].infoLowerPower}</div>` : ''}
+                    </div>
+                    <div class="text-right pl-4">
+                        <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">${dateInfo}</div>
+                        ${badge}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
