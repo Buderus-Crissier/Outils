@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buderus - Sélection PAC Air/Eau intérieures au R290 - Suisse</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Roboto for Buderus feel) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .buderus-blue {
+            background-color: #003d7c;
+        }
+        .buderus-blue-light {
+            background-color: #005eb8;
+        }
+        .buderus-text {
+            color: #003d7c;
+        }
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #005eb8;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #003d7c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="buderus-blue text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <h1 class="text-2xl font-bold tracking-tight">Buderus</h1>
+                <span class="border-l border-white/30 h-6 mx-2"></span>
+                <span class="text-sm font-light opacity-90" data-i18n="appTitle">Sélection PAC Air/Eau intérieures au R290 - Suisse</span>
+            </div>
+            
+            <!-- Language Selector -->
+            <div class="flex space-x-2">
+                <button onclick="setLanguage('fr')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-fr">FR</button>
+                <button onclick="setLanguage('de')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-de">DE</button>
+                <button onclick="setLanguage('it')" class="px-2 py-1 rounded hover:bg-white/20 text-sm font-medium transition lang-btn" id="btn-it">IT</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Selection Card (Main Interface) -->
+        <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden step-card">
+            <div class="buderus-blue-light px-6 py-4 text-white flex justify-between items-center">
+                <h2 class="text-lg font-semibold flex items-center">
+                    <i class="fas fa-search mr-3"></i>
+                    <span data-i18n="selectionTitle">Sélection de la PAC</span>
+                </h2>
+            </div>
+            
+            <div class="p-6 bg-gray-50 border-b border-gray-100">
+                <div class="max-w-xl mx-auto">
+                    <!-- Target Power Input -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <span data-i18n="targetPowerLabel">Puissance souhaitée à A-7/W35</span>
+                            <i class="fas fa-info-circle text-gray-400 ml-1 cursor-help" title="Point de bivalence estimé"></i>
+                        </label>
+                        <div class="relative rounded-md shadow-sm">
+                            <input type="number" id="target-power" step="0.1" class="block w-full text-lg border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 p-3 border" placeholder="ex: 8.5" oninput="findProducts()">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 font-bold">kW</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-center" data-i18n="manualEntryHint">Entrez la puissance du point de bivalence.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results List -->
+            <div class="p-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    <span data-i18n="resultsTitle">Modèles recommandés</span>
+                </h3>
+                
+                <div id="results-container" class="space-y-4">
+                    <!-- Results injected here -->
+                    <div class="text-center text-gray-400 py-8 italic" data-i18n="noResultsStart">
+                        Entrez une puissance pour voir les résultats.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; 2026 Buderus. <span data-i18n="footerDisclaimer">Outil d'aide à la vente. Ne remplace pas une étude technique officielle.</span></p>
+            <p class="text-xs mt-2 text-gray-600">v1.2 (Version Client Externe) - 29.01.2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA & CONFIGURATION ---
+
+        // Translations (Simplified to keep only selection related keys)
+        const i18n = {
+            fr: {
+                appTitle: "Sélection PAC Air/Eau intérieures au R290 - Suisse",
+                selectionTitle: "Sélection de la PAC",
+                targetPowerLabel: "Puissance requise (A-7/W35)",
+                manualEntryHint: "Entrez la puissance du point de bivalence.",
+                resultsTitle: "Modèles compatibles",
+                noResultsStart: "Entrez une puissance pour voir les modèles.",
+                noResultsFound: "Aucun modèle ne correspond à vos critères.",
+                availNow: "Disponible",
+                power: "Puissance",
+                infoLowerPower: "Information: Puissance légèrement inférieure (-1kW max)",
+                footerDisclaimer: "Outil d'aide à la vente. Ne remplace pas une étude technique officielle."
+            },
+            de: {
+                appTitle: "Auswahl WP Luft/Wasser Innen R290 - Schweiz",
+                selectionTitle: "Wärmepumpen Auswahl",
+                targetPowerLabel: "Benötigte Leistung (A-7/W35)",
+                manualEntryHint: "Geben Sie die Bivalenzpunktleistung ein.",
+                resultsTitle: "Empfohlene Modelle",
+                noResultsStart: "Geben Sie eine Leistung ein.",
+                noResultsFound: "Keine passenden Modelle gefunden.",
+                availNow: "Verfügbar",
+                power: "Leistung",
+                infoLowerPower: "Info: Leistung leicht geringer (-1kW max)",
+                footerDisclaimer: "Verkaufstool. Ersetzt keine offizielle technische Studie."
+            },
+            it: {
+                appTitle: "Selezione PAC Aria/Acqua interne R290 - Svizzera",
+                selectionTitle: "Selezione della PAC",
+                targetPowerLabel: "Potenza richiesta (A-7/W35)",
+                manualEntryHint: "Inserire la potenza del punto di bivalenza.",
+                resultsTitle: "Modelli raccomandati",
+                noResultsStart: "Inserisci una potenza per vedere i risultati.",
+                noResultsFound: "Nessun modello trovato per questa data/potenza.",
+                availNow: "Disponibile",
+                power: "Potenza",
+                infoLowerPower: "Info: Potenza leggermente inferiore (-1kW max)",
+                footerDisclaimer: "Strumento di vendita. Non sostituisce uno studio tecnico ufficiale."
+            }
+        };
+
+        // PRODUCT DATA (External List - Only available products)
+        const products = [
+            { power: 6, name: "WLW176/186i-6 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 8, name: "WLW176/186i-8 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 10, name: "WLW176/186i-10 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 12, name: "WLW176/186i-12 AR", avail: "2026-Q1", end: "2027-Q2" },
+            { power: 13, name: "PRO M", avail: "2026-Q1", end: "2027-Q4" },
+            { power: 15, name: "PRO AC 10 AW (R32)", avail: "2026-Q1", end: "2026-Q4" },
+            { power: 19, name: "PRO AC 16 AW (R32)", avail: "2026-Q1", end: "2026-Q4" },
+            { power: 20, name: "PRO L", avail: "2026-Q1", end: "2027-Q4" },
+            { power: 20, name: "LA2030CP", avail: "2026-Q1", end: "2027-Q4" },
+            { power: 42, name: "LA4060CP", avail: "2026-Q1", end: "2027-Q4" }
+        ];
+
+        let currentLang = 'fr';
+
+        // --- INIT ---
+        window.onload = function() {
+            setLanguage('fr');
+        };
+
+        // --- LOGIC ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    el.textContent = i18n[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('bg-white/20'));
+            document.getElementById(`btn-${lang}`).classList.add('bg-white/20');
+            findProducts(); // Refresh results with new language strings
+        }
+
+        function getQuarterValue(qStr) {
+            if (!qStr) return 0;
+            const parts = qStr.split("-Q");
+            if (parts.length !== 2) return 0;
+            return parseInt(parts[0]) * 10 + parseInt(parts[1]);
+        }
+
+        function getProductDescription(name) {
+            if (/WLW186i\.2.*MBE\+.*AR/.test(name)) return "BUDERUS haut de gamme futur";
+            if (/WLW176\/186i.*AR/.test(name)) return "BUDERUS cœur de gamme";
+            if (/WLW176i\.2.*AR/.test(name)) return "BUDERUS entrée de gamme futur";
+            if (/WLW186i\.2.*AR/.test(name)) return "BUDERUS cœur de gamme futur";
+            if (/^PRO/.test(name)) return "Marque KERMI (groupe KERMI/ARBONIA)";
+            if (/^LA.*CP/.test(name)) return "Marque DIMPLEX";
+            return "";
+        }
+
+        function findProducts() {
+            const targetStr = document.getElementById('target-power').value;
+            if (!targetStr) {
+                document.getElementById('results-container').innerHTML = `<div class="text-center text-gray-400 py-8 italic">${i18n[currentLang].noResultsStart}</div>`;
+                return;
+            }
+
+            const target = parseFloat(targetStr);
+            // Default "Current Date" fixed to 2026 Q1 for this tool version
+            const selectedDateVal = 20261; 
+            const container = document.getElementById('results-container');
+            
+            container.innerHTML = '';
+
+            // 1. Initial Filter (Availability & Min Power)
+            const availableProducts = products.filter(p => {
+                const pStartVal = getQuarterValue(p.avail);
+                const pEndVal = getQuarterValue(p.end);
+                
+                // Show products available NOW (fixed date) or before
+                if (selectedDateVal < pStartVal) return false;
+                if (selectedDateVal > pEndVal) return false;
+
+                // Show products starting from 1kW below target
+                return p.power >= (target - 1.0);
+            });
+
+            // 2. Determine "Strictly Higher" Logic to limit upper results
+            const strictlyHigherOrEqual = availableProducts.filter(p => p.power >= target);
+            strictlyHigherOrEqual.sort((a, b) => a.power - b.power);
+
+            // Find the closest power step above or equal to target
+            let nextHigherPowerValue = null;
+            if (strictlyHigherOrEqual.length > 0) {
+                nextHigherPowerValue = strictlyHigherOrEqual[0].power;
+            }
+
+            // 3. Final Filter: Keep everything slightly below AND the specific power step strictly above
+            const finalMatches = availableProducts.filter(p => {
+                if (p.power < target) return true; // Keep "slightly below" (-1kW)
+                if (nextHigherPowerValue !== null && p.power === nextHigherPowerValue) return true; // Keep best match above
+                return false;
+            });
+
+            if (finalMatches.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-500 py-4">${i18n[currentLang].noResultsFound}</div>`;
+                return;
+            }
+
+            finalMatches.sort((a, b) => a.power - b.power);
+
+            finalMatches.forEach(p => {
+                const isStrictMatch = p.power >= target;
+                const isCloseMatch = !isStrictMatch && p.power >= (target - 1.0);
+                const desc = getProductDescription(p.name);
+
+                let cardClass = isStrictMatch ? "border-l-4 border-green-500" : "border-l-4 border-orange-400 opacity-90";
+                
+                let badge = isStrictMatch ? 
+                    `<span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">OK</span>` : 
+                    `<span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded"><i class="fas fa-info-circle mr-1"></i> -${(target - p.power).toFixed(1)} kW</span>`;
+
+                // Date info is less relevant in "Available Now" mode, but we keep it for reference or remove if desired. 
+                // Since user asked to remove "selection", I keep "info" but can remove if requested.
+                let dateInfo = `<i class="far fa-calendar-alt text-gray-400 mr-1"></i> ${p.avail}`;
+
+                const card = document.createElement('div');
+                card.className = `bg-white p-4 rounded shadow-sm border ${cardClass} flex justify-between items-center transition hover:shadow-md`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 mb-1">
+                            <h4 class="font-bold text-lg text-gray-800">${p.name}</h4>
+                            ${desc ? `<span class="text-xs font-medium px-2 py-1 rounded bg-gray-100 text-gray-600 border border-gray-200">${desc}</span>` : ''}
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <span class="font-medium">${i18n[currentLang].power} A-7/W35:</span> 
+                            <span class="text-lg font-bold ${isStrictMatch ? 'text-blue-700' : 'text-orange-600'}">${p.power.toFixed(1)} kW</span>
+                        </div>
+                        ${isCloseMatch ? `<div class="text-xs text-orange-600 mt-1 italic">${i18n[currentLang].infoLowerPower}</div>` : ''}
+                    </div>
+                    <div class="text-right pl-4">
+                        <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">${dateInfo}</div>
+                        ${badge}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
